@@ -1,0 +1,4 @@
+# Hermes-specific (local)
+*.local.*
+.env
+*.log
