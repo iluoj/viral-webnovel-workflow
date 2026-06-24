@@ -1,6 +1,6 @@
 ---
 name: viral-webnovel
-description: "Full-pipeline Chinese webnovel factory: novel creation + short-drama adaptation + platform compliance. Covers Fanqie/Qimao fiction (premise-to-chapter drafting, both 男频 and 女频), △-format short-drama conversion with paywall placement, and 2026 Douyin compliance filtering (S/A/B/C tier + hidden red lines). Supports three output modes: standard webnovel, lightweight test, and 漫剧 short-drama adaptation (60-80集 × 600-800字/集)."
+description: "Full-pipeline Chinese webnovel factory: novel creation + short-drama adaptation + platform compliance. Covers Fanqie/Qimao fiction (premise-to-chapter drafting, both 男频 and 女频), △-format short-drama conversion, and 2026 Douyin compliance filtering (S/A/B/C tier + hidden red lines). Supports three output modes: standard webnovel, lightweight test, and 漫剧 short-drama adaptation (60-80集 × 600-800字/集)."
 ---
 
 # viral-webnovel
@@ -66,13 +66,7 @@ When running `diagnose` and presenting three branches at Manual Checkpoint C, if
 - ❌ **不要在同一轮 draft-5 中混淆两种格式。** 要么全按网文版写，要么全按漫剧版写。不能前两章1500字、后三章600字。
 - ❌ **当用户说"字数会不会太多"时，不要自行切换到漫剧版。** 先问清楚："你是想缩减字数改为漫剧脚本，还是保持网文格式但减少总章数？"
 
-## Profile Separation（本skill与drama-pipeline profile的独立副本方案）
-
-> ⚠️ **当前状态：本profile同时拥有 drama-adapt/prompt-gen/compliance-audit 的完整独立副本。** 与 drama-pipeline profile 互不影响。以下记录了过去分离到 drama-pipeline 的历史参考，但当前本profile已恢复完整能力。drama-pipeline 中的任何修改不会波及这里。
->
-> 📖 独立副本维护/同步流程见 `references/profile-independent-copy.md`。
-
-### 命令归属
+## 命令归属
 
 | 命令 | 所属 profile | 说明 |
 |------|-------------|------|
@@ -85,9 +79,9 @@ When running `diagnose` and presenting three branches at Manual Checkpoint C, if
 | `compress` | **viral-webnovel** | 记忆压缩 |
 | `diagnose` | **viral-webnovel** | 弃读诊断 |
 | `humanize` | **viral-webnovel** | 去AI味 |
-| `drama-adapt` | **viral-webnovel**（独立副本） | △格式短剧剧本转换（与drama-pipeline互不影响） |
-| `prompt-gen` | **viral-webnovel**（独立副本） | 视频分镜提示词生成（与drama-pipeline互不影响） |
-| `compliance-audit` | **viral-webnovel**（独立副本） | 2026平台合规逐条过检（与drama-pipeline互不影响） |
+| `drama-adapt` | **viral-webnovel** | △格式短剧剧本转换 |
+| `prompt-gen` | **viral-webnovel** | 视频分镜提示词生成 |
+| `compliance-audit` | **viral-webnovel** | 2026平台合规逐条过检 |
 
 ### 新建 profile 的步骤
 
@@ -126,9 +120,7 @@ viral-webnovel profile（写小说 + 转剧本独立副本）
   │ → 段提示词   │
   └──────────────┘
 
-drama-pipeline profile 是独立副本，修改不影响本profile。工作区目录共享。
-
-## Hermes Profile 配置速查（本profile）
+  ## Hermes Profile 配置速查（本profile）
 
 用户反映 Hermes 配置"好烦人"，以下是针对本 profile 的极简说明：
 
@@ -217,7 +209,7 @@ This skill's writing capabilities can be exported as platform-agnostic agent pro
 | `04-writer.md` | draft-5 | chapter writing + chapter template (开头300字冲突/爽点/钩子) |
 | `05-diagnoser.md` | diagnose | retention diagnosis + 3-branch recommendation |
 | `06-compliance.md` | compliance-audit | 6 red lines + S/A/B/C tier audit |
-| `07-drama-adapter.md` | drama-adapt | △-format short drama conversion + paywall |
+| `07-drama-adapter.md` | drama-adapt | △-format short drama conversion |
 | `08-prompt-engineer.md` | prompt-gen | time-axis storyboard prompts (0-3/3-6/6-9/9-12/12-15s) |
 
 Each agent file is a pure system prompt: role definition, input spec, output format template (verbatim from this skill's reference files), and known pitfalls. No Hermes-specific syntax.
@@ -228,6 +220,7 @@ Each agent file is a pure system prompt: role definition, input spec, output for
 2. Updates only on explicit user request ("封版" / "更新到v2.0")
 3. Changes visible via `git diff v1.0..v2.0` — user reviews before accepting
 4. After tagging, no automatic skill modifications during conversations. The user decides when to unfreeze.
+5. **Workflow repo location**: `E:\viral-webnovel-workflow\` — viral-webnovel skill pipeline (SKILL.md + references/) lives here as a git repo. Push to GitHub needs a PAT token (password auth is deprecated).
 
 ### Usage Examples
 
@@ -277,7 +270,7 @@ For teams or power users, the single-agent pipeline can be upgraded to a paralle
 |Stage 7:  ag_008 审核校准  (single; can reject → back to Stage 5)
 |Stage 8:  ag_009 文笔优化 + ag_010 标题钩子  (parallel)
 |Stage 9:  ag_013b 合规审计  (single; platform-compliance-2026 逐条过检)
-|Stage 10: ag_014 短剧转换  (single; 网文→△格式剧本+付费卡点)
+| Stage 10: ag_014 短剧转换  (single; 网文→△格式剧本)
 ```
 
 ### How to trigger
@@ -288,7 +281,7 @@ For teams or power users, the single-agent pipeline can be upgraded to a paralle
 Each agent gets injected with the relevant `references/*.md` file(s) as context via `delegate_task(context=...)`. Context flows: parent merges child JSON outputs → passes to next stage as structured context package.
 
 |- `trend-scan`: Load `references/platform-patterns.md` and `references/platform-compliance-2026.md`. Use when the user asks what is hot, what sells, what readers want, or what to avoid. The compliance guide is essential for assessing platform risk of each genre (S/A/B/C tier filtering). If the user asks for latest or current trends, browse and cite sources; otherwise state that built-in platform patterns are being used.
-|- `idea-pool`: Load `references/platform-patterns.md`, `references/idea-scoring.md`, and `references/platform-compliance-2026.md`. Generate 20 premise candidates. Apply S/A/B/C tier filtering from compliance guide — candidates prohibited or high-risk must be flagged explicitly. Stop for Manual Checkpoint A.
+|- `idea-pool`: Before generating, check memory for an existing "Selected premise" record. If found, flag it to the user ("你之前选的是 XXX，已包含在候选中") so they don't start over by accident. Then load `references/platform-patterns.md`, `references/idea-scoring.md`, and `references/platform-compliance-2026.md`. Generate 20 premise candidates. Apply S/A/B/C tier filtering from compliance guide — candidates prohibited or high-risk must be flagged explicitly. Stop for Manual Checkpoint A.
 |- `bible`: Load `references/story-bible-template.md`, plus `references/idea-scoring.md` if the selected premise still feels generic. Load `references/manga-hit-guide-2026.md` if the premise needs golden-finger legal-packaging advice.
 |- `outline-30`: Load `references/outline-structure.md` and `references/manga-hit-guide-2026.md`. Create the front-30-chapter structure with legally packaged payoff sequencing. Stop for Manual Checkpoint B before drafting.
 |- `full-novel-lifecycle`: See `references/full-novel-lifecycle.md` — observed 80-chapter pipeline pattern (five-volume structure, emotional curve design, auto-pilot performance).
@@ -296,20 +289,27 @@ Each agent gets injected with the relevant `references/*.md` file(s) as context 
 |- `draft-5`: Load `references/chapter-template.md`, `references/memory-system.md`, `references/platform-compliance-2026.md`, and the latest context package. Write 5 chapters, not more, unless the user explicitly asks for fewer. Chapter word count depends on active mode: Full mode ≥1000 characters, 漫剧适配版 600-800 characters, Lightweight ~2000 cumulative. Before outputting, check each chapter against the 6 zero-tolerance red lines in the compliance guide.
 |- `compress`: Load `references/memory-system.md` and create the next-round context package.
 |- `diagnose`: Load `references/diagnose-loop.md` and produce reader feedback simulation, failure checks, and three branch choices. Stop for Manual Checkpoint C.
-|- `compliance-audit`: ✅ **本profile完整保留（独立副本）**。全套合规审计+灰区扫描+重写建议直接使用。查看 `references/platform-compliance-2026.md`。与 drama-pipeline profile 同名命令互不影响。
-|- `drama-adapt`: ✅ **本profile完整保留（独立副本）**。参考文件 `references/drama-adaptation.md`，在本profile内直接执行即可输出△格式剧本。与 drama-pipeline profile 同名命令互不影响。
-|- `prompt-gen`: ✅ **本profile完整保留（独立副本）**。源skill模板见 `references/mantoufan-prompt-source.md`，在本profile内直接执行即可输出分镜提示词。与 drama-pipeline profile 同名命令互不影响。
+| `compliance-audit`: ✅ **本profile完整保留**。全套合规审计+灰区扫描+重写建议直接使用。查看 `references/platform-compliance-2026.md`。
+
+  **审计方法论（来自2026.05.18规则更新后的实践）：**
+
+  1. **先检查现有审计报告的日期。** 如果现有 `99-合规自检报告.md` 的版本日期早于 `platform-compliance-2026.md` 的最新版本日期，必须标记"规则更新后重新审计"。
+  2. **正文 vs 大纲分开检查。** 实践中发现：**大纲（`01_前80章大纲（完整）.md`）文件中的措辞往往比正文更 sensational**——大纲用简写/噱头式表述（如"天赋升级""终极形态"），而正文实际描写更温和（如"药膳蒸汽""天赋无效"）。审计时必须查阅正文原文验证，不能只依赖大纲判断。
+  3. **△剧本的合规度天然更高。** 由于△剧本是视觉/动作驱动的场景化写作，很少出现超能力式抽象表述，通常比对应的正文章节更安全。
+  4. **隐性红线修复策略：** 遇"爽点碾压"类问题时，优先改措辞不改剧情——将"突然获得超能力"改写为"通过长期练习/传承学习获得的技艺突破"，剧情框架不动。
+  5. **审计完成后更新 `99-合规自检报告.md`** 中的状态和整改记录，确保下一次审计能直接看到本次改动。
+| `drama-adapt`: ✅ **本profile完整保留**。参考文件 `references/drama-adaptation.md`，在本profile内直接执行即可输出△格式剧本。
+
+  **续写已存在项目的工作流（非首次适配）：**
+  1. 先读取项目下所有已有文件：`01-题材定位.md`、`02-角色资产表.md`、`03-场景资产表.md`、`04-全集大纲.md`、`05-付费卡点布局.md`、`99-合规自检报告.md`
+  2. 读取最近一集的 △ 剧本文件，确认格式细节（语气标记、OS/独白风格、△描述颗粒度）
+  3. 读取对应的小说章节原文作为素材
+  4. 严格保持格式一致：新写剧本的 △ 标记、对话格式、OS 风格必须与已有剧本逐字对齐
+| `prompt-gen`: ✅ **本profile完整保留**。源skill模板见 `references/matsuri-director-prompt.md`，在本profile内直接执行即可输出分镜提示词。
 |- `humanize`: Load `references/rewrite-humanization.md`.
-  **Pipeline sequencing（本profile独立运行，不依赖drama-pipeline）:**
+  **Pipeline sequencing（本profile独立运行）:**
   - ✅ 本profile内 **写小说 → 转剧本 → 分镜提示词** 全链路直接可用
   - ✅ 三步流水线：`compliance-audit` → `drama-adapt` → `prompt-gen`
-  - ✅ 与 drama-pipeline profile 互不影响——那边随便改，这边稳如泰山
-
-  或者也可以跨 profile 接力（如果希望那边处理的话）:
-  - ⏸️ 切换到 **drama-pipeline profile**（`hermes -p drama-pipeline`）执行以下步骤：
-  - ✅ Run `compliance-audit` FIRST to ensure the source novel passes all red lines.
-  - ✅ THEN run `drama-adapt` to convert — outputs `短剧版/` including `02-角色资产表.md`(C##), `03-场景资产表.md`(S##), plus per-episode △剧本.
-  - ⏸️ THEN run `prompt-gen` (optional — only if user explicitly requests video storyboard prompts). Reads global asset tables from drama-adapt output, supplements per-episode assets (P##), and outputs per-episode shot-by-shot prompt files.
 
   **Output folder structure for drama-adapt (+ prompt-gen):**
   ```
@@ -317,8 +317,7 @@ Each agent gets injected with the relevant `references/*.md` file(s) as context 
   ├── 01-题材定位.md          # S/A/B/C分级 + 受众 + 付费策略
   ├── 02-角色资产表.md        # 角色编号C01-C99 + 外貌/性格标签 (prompt-gen读取)
   ├── 03-场景资产表.md        # 场景编号S01-S99 + 风格关键词 (prompt-gen读取)
-  ├── 04-全集大纲.md          # 60-100集 × 三幕结构表（含付费卡点标记）
-  ├── 05-付费卡点布局.md      # 卡点位置 + 套路类型 + 话术
+  ├── 04-全集大纲.md          # 60-100集 × 三幕结构表
   ├── 99-合规自检报告.md      # 红线 + 灰区扫描（可选）
   ├── episodes/               # △格式文字剧本（drama-adapt产出）
   │   ├── ep001.md
@@ -329,19 +328,11 @@ Each agent gets injected with the relevant `references/*.md` file(s) as context 
       └── ...
   ```
 
-  **付费卡点总原则：**
-  - 首充在1-10集内（通常第8集），免费区至少7集
-  - 后续卡点间隔至少5集
-  - 60集设5-7个卡点，80集设7-10个
-  - 每个卡点必须是高情绪时刻：身份揭晓、生死一线、情感中断、阴谋得逞、真相大白
-
   **单集△格式模板：**
   ```markdown
   # ep{编号} - {标题}
   
   **时长**：{X分X秒}
-  **对应小说**：第X章
-  
   ---
   △（场景/镜头描述）
   
@@ -482,6 +473,48 @@ For a 5-chapter production round, output:
 9. Three next-branch choices.
 
 If the user asks for final polish, add a separate humanized final version after the diagnostic pass.
+
+## Reference Update Rules（用户补充审核/创作规范时的操作铁律）
+
+当用户提供新的审核规范/创作指南/参考文件要求整合时，必须遵守以下流程：
+
+### 原则一：整体创作流程不变
+
+> **这是本技能的最高执行原则。** 用户多次强调"整体创作流程不变"。
+
+更新 reference 文件时：
+- ✅ 可修改 reference 正文内容（扩展表格、补充细则、新增章节）
+- ❌ **绝不修改 SKILL.md 中的 pipeline 命令结构和执行流程**
+- ❌ 绝不新增/删除/重命名现有命令
+- ❌ 绝不改变 Manual Checkpoint 的触发位置和类型
+- ❌ 绝不改变输出格式决策的流程
+- ❌ 绝不改变 draft-5 → diagnose → branch 的迭代节奏
+
+更新步骤：
+1. **对比** — 读取现有 reference + 用户提供的新文件，逐项对比差异
+2. **预览** — 展示新增内容和保留内容，让用户看到改了哪里
+3. **确认** — 用 clarify 询问用户"确认写入？"
+4. **写入** — 仅更新 reference 文件，不碰 SKILL.md
+
+### 原则二：参考文件更新流程
+
+```mermaid
+flowchart LR
+    A[读取现有reference] --> B[读取用户提供的源文件]
+    B --> C[逐项对比: 已有/缺失/冲突]
+    C --> D[输出差异预览]
+    D --> E{用户确认?}
+    E -->|否| X[停止,不写]
+    E -->|是| F[写入reference文件]
+    F --> G[确认SKILL.md不动]
+```
+
+### 原则三："算了不改了" 立即终止
+
+当用户说 "算了不改了"、"算了"、"不动"、"先别弄了" 或类似意思时：
+- 立即终止当前备选行动，不做任何额外解释
+- 不追问 "真的不弄了吗？"
+- 不主动再次提起该任务
 
 ## File Output & Persistence
 

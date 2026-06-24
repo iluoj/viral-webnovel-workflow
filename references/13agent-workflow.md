@@ -29,7 +29,7 @@ Stage 1 ─ ag_001 赛道分析
   │   └── can reject → Stage 5 or flag for rewrite
   │
   └─ [新增] Stage 10 ─ ag_014 短剧转换 (drama-adaptation.md + short-drama/ 方法论)
-      └── 网文 → △格式短剧剧本 + 付费卡点布局
+      └── 网文 → △格式短剧剧本
 ```
 
 ## Agent Reference Injection Map
@@ -68,7 +68,7 @@ Each stage parent merges child JSON outputs into a rolling context package:
 - `outline-30` with `mode: 13agent` → Stages 4 parallel
 - `draft-5` with `mode: 13agent` → Stages 5-8 with optional趣味增强
 - `audit` → ag_013b 合规审计（platform-compliance-2026 审核）
-- `drama` → ag_014 短剧转换（网文→△格式剧本+付费卡点）
+|- `drama` → ag_014 短剧转换（网文→△格式剧本）
 - `diagnose` → ag_008 审核
 - `humanize` → ag_009 润色
 
