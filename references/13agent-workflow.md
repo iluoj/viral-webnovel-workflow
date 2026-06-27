@@ -1,4 +1,4 @@
-# 13-Agent 网文工厂 · 融合架构
+# 13-Agent 网文工厂 - 融合架构
 
 > 融合 13-agent 并行流水线 + viral-webnovel reference 注入 + 滚动压缩记忆系统
 

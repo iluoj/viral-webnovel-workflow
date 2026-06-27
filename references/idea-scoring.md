@@ -6,6 +6,7 @@ Use this reference in `idea-pool` and when rescuing a generic premise.
 
 Generate 20 candidates. Each candidate must include:
 
+- **Grade** (S/A/B/C, 标注平台合规等级)
 - Title.
 - Hook.
 - Synopsis.
@@ -30,6 +31,18 @@ Use 1-10 scores:
 - Platform risk: lower score means safer; higher score means more likely to cross content or originality boundaries.
 
 After scoring, recommend the top 3. Do not automatically choose for the user.
+
+## Grade Distribution Rule
+
+When generating a batch of 20 candidates, the grade spread **must not cluster in a single tier**.
+
+**Minimum coverage**: at least 3 distinct grade levels must be represented (S/A/B/C).
+**Maximum clustering**: no single grade may exceed 60% of the batch (i.e. ≤12 out of 20).
+**Label each candidate** with its grade in the output, using the `**Grade**:` field.
+
+If the user already has an existing batch on file (e.g. from an earlier `idea-pool` run), and calls `idea-pool` again for more options, check which grades are missing or underrepresented, and weight the new batch toward those gaps.
+
+See `references/platform-compliance-2026.md` for the full grade definitions (S/A/B/C tier + prohibited topics).
 
 ## Anti-Template Tests
 
