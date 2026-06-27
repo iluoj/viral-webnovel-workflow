@@ -1,6 +1,8 @@
 # 模型能力矩阵 — 创作流水线选型依据
 
 > 创建日期：2026-06-27
+> ⚠️ **2026-06-27 更新：全部 profile 实际已切换为 deepseek-v4-flash（成本优先）**
+> 以下能力对比为理论参考。实测 deepseek-v4-flash 在剧本写作中与 Gemini 3.1 Pro 质量差距极小，已在6个profile全面部署。
 > 用途：为 viral-webnovel 6-profile 流水线提供模型选型的量化参考
 > 前提：所有主流模型（Gemini 3.1 Pro、deepseek-v4-pro、deepseek-v4-flash）都支持 1M context。差异在推理质量，不在 context 大小。
 
