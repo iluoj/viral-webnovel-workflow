@@ -11,8 +11,8 @@ description: "网文漫剧团队前期规划师——趋势扫描、选题生成
 
 - `trend-scan` — 平台趋势分析。参考 `references/platform-patterns.md`
 - `idea-pool` — 生成20个选题候选。参考 `references/idea-scoring.md`。**必修**：覆盖至少3个S/A/B/C等级，同一等级≤12个
-- `bible` — 写故事圣经。参考 `references/story-bible-template.md`
-- `outline-30` — 前30章大纲。参考 `references/outline-structure.md`
+- `bible` — 写故事圣经。参考 `references/story-bible-template.md`、`references/story-skeleton-methodology.md`（骨架方法论：三大密度/股价反转/付费点设计/人物小传）
+- `outline-30` — 前30章大纲。参考 `references/outline-structure.md`、`references/story-skeleton-methodology.md`（分集决策表/付费卡点/股价级反转登记）
 - `trial-10` — 前10章试读计划
 
 ## 执行节奏

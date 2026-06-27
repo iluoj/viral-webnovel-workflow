@@ -19,6 +19,24 @@ Default to Chinese output unless the user asks otherwise.
 
 Default to lightweight unless the user explicitly asks for comprehensive output.
 
+### ⚠️ S1 体量基准：对标发配边关
+
+2026-06-27 项目实测，发配边关 S1 的数据作为体量基准：
+
+| 指标 | 发配边关 S1 | 说明 |
+|:----|:----------|:----|
+| 集数 | 40-50集 | 对标项目默认取中位45集 |
+| 每集时长 | 约2分钟 | 300-400字/集（音频转文字测算） |
+| **S1总时长** | **80-100分钟** | **S1总量不建议超过此范围** |
+| S1总字数 | 约15,000字 | 音频转文 |
+
+**2026-06-27实践发现：** 对标项目50集×平均2分19秒=116分钟，比发配边关 S1 上限（100分钟）多出16分钟。用户在审核剧本时明确质疑「太长了吧」。**建议S1总时长控制在80-100分钟以内。**
+
+体量控制方案（选择其一，在输出格式决策时一并确认）：
+- A）保持集数，缩短单集至2分 → 总时长约100分
+- B）保持单集节奏，砍到40集 → 总时长约92分
+- C）精炼剧情砍到35集 → 总时长约80分
+
 ### ⚠️ 关键流程步骤：输出格式决策
 
 **在进入 `draft-5` 之前，必须明确向用户确认输出格式。** 不能替用户假设。
@@ -100,7 +118,8 @@ When running `diagnose` and presenting three branches at Manual Checkpoint C, if
 - ❌ **不要在用户说"能不能也结合一下X"时拒绝或防御原有方案。** 创意融合（将多个成功作品的核心元素杂交）是比1:1对标更高级的创作方式。用户提到另一个作品时，立刻用"是，可以融合"回应，然后把两个框架放在一起找碰撞点。
 - ❌ **不要在第一轮就出最终方案。** 创意迭代至少需要3轮：第一轮出几个方向→用户选1-2个→第二轮融合用户提到的其他元素→第三轮精确定位。第一轮就锁定的方案往往不是最好的。
 - ✅ **当用户说"我觉得后两个都不错"时，主动提出融合版。** 不要等用户自己说怎么融合。用"是，可以融合"开场，给出融合方案。
-- ❌ **不要在用户要求1:1对标时主动添加未经验证的叙事模式。** 当用户明确说"一定要一致"、"对标原版"时，对标方案中绝不能加入原版没有的叙事元素（如男主死亡、深V反转、兽族设定等）。如果用户说"能不能结合X"，先问清楚是把X作为对标模板的补充，还是要替换对标模板。不要在未确认的情况下自作主张做"升级版"。
+- ❌ **不要在用户要求1:1对标时主动添加未经验证的叙事模式。** 当用户明确说「一定要一致」、「对标原版」时，对标方案中绝不能加入原版没有的叙事元素（如男主死亡、深V反转、兽族设定等）。如果用户说「能不能结合X」，先问清楚是把X作为对标模板的补充，还是要替换对标模板。不要在未确认的情况下自作主张做「升级版」。
+- ❌ **当用户说「要有武侠元素/功法」等题材风味词时，不要直接设计完整的体系。** 先澄清用户期望的深度：(a) **核心驱动力**（有具体设定/等级/打斗场面），还是 (b) **世界观底色**（只有地名/身份标签/氛围，不作为剧情主线）。默认走(b)，除非用户明确要求(a)。本技能曾犯过用户只说「有点武侠元素」就设计完整经脉体系+打斗场次的错误——用户想的是世界观背景，不是功法设定。
 
 ### Pitfalls（model recommendation 相关）
 
@@ -111,6 +130,11 @@ When running `diagnose` and presenting three branches at Manual Checkpoint C, if
 - ❌ **不要用单一硬件指标（如 context 大小）作为排他性推荐理由。** 多个厂商的旗舰模型在硬件指标上往往对齐——context 大小、多模态支持等不是差异点。真正的差异在推理质量、创意写作、格式遵循等软能力上。推荐前先做能力维度对比表，而不是拿一个所有人都有的指标当卖点。
 - ✅ **推荐模型时，明确标注「这个结论基于官方Pricing页的日期 X」或「这是我自己的经验判断」**，让用户判断信息时效性。
 
+### Pitfalls（diagnosis / file inspection 相关）
+
+- ❌ **不要凭单一路径的 ls 结果就判定文件不存在。** sub-profile 的 skill 文件可能嵌套在多级子目录中（如 `skills/<profile名>/references/` 而不是 `skills/references/`）。报告文件缺失前，先用 `find <dir> -type f | head` 全量确认，或用 `hermes skills list --profile` 查看已安装技能列表。
+- ❌ 报告问题时，先怀疑自己的路径是否正确，再下结论文件缺失。
+
 ### Pitfalls（prompt-gen 相关）
 
 - ❌ **严禁用 execute_code 或任何脚本批量生成提示词。** 内容由模型逐段思考后用 write_file 逐个写入。脚本只能做创建目录、检查文件存在等纯辅助操作，不能生成提示词的任何一个字。脚本批量生成导致：(1) 格式走样，(2) 运镜选择模板化无叙事针对性，(3) 用户一眼看出是模板文本而非模型生成。
@@ -120,6 +144,7 @@ When running `diagnose` and presenting three branches at Manual Checkpoint C, if
 - ❌ **写每个文件前打开 reference 对照格式。** 麻薯格式的每一行（总述头部、|切片段、运镜补充、配音指令）用 matsuri-director-prompt.md 逐行对照。**第一个文件让用户确认格式后再继续。**
 - ❌ 不要在询问画风之前就生成任何分镜提示词。
 - ❌ 每段的运镜不能全部是模板化的「中景/平拍，稳定镜头，速度平缓」。必须从 camera-shot-selection.md 的叙事目的→运镜决策表中选择。每段内4-5个切片段至少要有2次以上景别变化。
+- ❌ **分镜提示词台词量不能太少。** 2026-06-27 用户反馈「感觉没有什么台词」。每段15秒必须有至少2组配音指令（2-4句对话），纯OS段落≤整集段数的25%，无声段落≤每集1段。台词密度参考 `references/drama-timing-standard.md`。
 - ❌ 不要在一个文件中塞入多个段。一个文件只对应一个段。
 - ❌ 全量交付（方案A）时不要一个人写几百个文件。用 delegate_task 分包，每5-10集一个子代理，分配独占的 P## 编号区间。
 - ⚠️ **prompt-gen 前置三步**：(1) 用 clarify 问画风，(2) 画风融入场景设计，(3) 告知文件总量。
@@ -131,15 +156,17 @@ When running `diagnose` and presenting three branches at Manual Checkpoint C, if
 | `trend-scan` | **viral-webnovel** | 平台趋势分析 |
 | `idea-pool` | **viral-webnovel** | 选题生成 |
 | `bible` | **viral-webnovel** | 故事圣经 |
-| `outline-30` | **viral-webnovel** | 大纲规划 |
+| `outline-30` | **viral-webnovel** | 大纲规划。用 `references/story-skeleton-methodology.md` 设计分集决策表（行数=总集数）+ 股价级反转登记表（全剧≈3个反转，骨架阶段定死）|
 | `trial-10` | **viral-webnovel** | 试读计划 |
-| `draft-5` | **viral-webnovel** | 正文写作 |
+| `draft-5` | **viral-webnovel** | 正文写作。自检时用 `references/script-writing-methodology.md` 的三大密度（情绪/信息/情节）和 3-15-45 节奏检查每章 |
 | `compress` | **viral-webnovel** | 记忆压缩 |
 | `diagnose` | **viral-webnovel** | 弃读诊断 |
 | `humanize` | **viral-webnovel** | 去AI味 |
-| `drama-adapt` | **viral-webnovel** | △格式短剧剧本转换。参考文件 `references/drama-adaptation.md`。**每集时长要求：2分00秒-2分30秒，硬上限3分钟。** 超出3分钟的集必须压缩。全部集输出后必须检查 `*时长*` 头部标注与实际内容量匹配。如果内容压缩导致集数减少，必须物理删除旧的episode文件。
-| `prompt-gen` | **viral-webnovel** | 视频分镜提示词生成。默认输出格式：麻薯动漫导演格式（\\|切片段 + 运镜六要素 + 配音指令），见 `references/matsuri-director-prompt.md`。运镜规则见 `references/camera-shot-selection.md`（叙事目的→运镜决策表必需引用）。**⚠️ 方法铁律：prompt-gen 必须由模型逐段思考并直接用 write_file 写入，不得用 execute_code/脚本批量生成。**\n  **前置步骤（必须在生成第一个文件前执行）：**\n  (1) 用 clarify 询问画风（提供具体选项）。\n  (2) 用户选择画风后，画风信息融入场景设计和画面描述中，不作为单独「画风」行出现。\n  (3) 确认文件格式偏好（一段一文件含4-5切片段，每15秒一段）。\n  (4) 告知约略文件总量。\n  **段数规则：** 每集段数 = ceil(总秒数 ÷ 15)。例：2分15秒=135秒→9段。每段含3-5个切片段（通常4个），每个切片段约3-4秒。\n  **配音指令格式（严格遵循，不得自创）：**\n  ```\n  【角色名】\n  （配音指令：[性别年龄]，[音色类型]｜[语气情绪]，"[台词]"）\n  ```\n  **输出文件结构：** 每段一个文件，命名 `{ep编号}-段{NNN}-提示词.md`，每文件含总述头部 + 4-5个\\|切片段。
-| `compliance-audit` | **viral-webnovel** | 2026平台合规逐条过检 + 爆款潜力评估。输出包含八部分：1-6合规检查 + 7流量适配建议 + 8爆款潜力评估。见 `references/platform-compliance-2026.md` 和 `references/compliance-audit-template.md`。**审计前预检：确认集数一致性。** 读取 `04-全集大纲.md` 确认剧本总集数，检查 `episodes/` 目录下的文件是否覆盖全部集数且无旧版残余。审计报告声明集数必须与实际文件一致。
+| `drama-adapt` | **viral-webnovel** | △格式短剧剧本转换。参考文件 `references/drama-adaptation.md`（含改编8大核心要点+删减决策优先级）和 **`references/drama-timing-standard.md`**（时长计算标准——必须按对话字数计算时长，不得用总字数估算）。**新增**：△剧本完成后→可选执行 `references/director-plan-methodology.md`（导演规划：分场/台词统计/情绪分析）→ `references/storyboard-table-methodology.md`（分镜表：结构化分镜/每片段≤15秒/过渡设计），为 prompt-gen 提供更精准的输入。**每集时长要求：2分00秒-2分30秒，硬上限3分钟。**
+| `prompt-gen` | **viral-webnovel** | 视频分镜提示词生成。默认输出格式：麻薯动漫导演格式（\\|切片段 + 运镜六要素 + 配音指令），见 `references/matsuri-director-prompt.md`（**新增** @图N 参考图绑定格式+三段式结构+景别词库+画质禁用词）。运镜规则见 `references/camera-shot-selection.md`（叙事目的→运镜决策表必需引用）。**⚠️ 方法铁律：prompt-gen 必须由模型逐段思考并直接用 write_file 写入，不得用 execute_code/脚本批量生成。**\n  **前置步骤（必须在生成第一个文件前执行）：**\n  (1) 用 clarify 询问画风（提供具体选项）。\n  (2) 用户选择画风后，画风信息融入场景设计和画面描述中，不作为单独「画风」行出现。\n  (3) 确认文件格式偏好（一段一文件含4-5切片段，每15秒一段）。\n  (4) 告知约略文件总量。\n  **段数规则：** 每集段数 = ceil(总秒数 ÷ 15)。例：2分15秒=135秒→9段。每段含3-5个切片段（通常4个），每个切片段约3-4秒。\n  **配音指令格式（严格遵循，不得自创）：**\n  ```\n  【角色名】\n  （配音指令：[性别年龄]，[音色类型]｜[语气情绪]，"[台词]"）\n  ```\n  **输出文件结构：** 每段一个文件，命名 `{ep编号}-段{NNN}-提示词.md`，每文件含总述头部 + 4-5个\\|切片段。
+| `compliance-audit` | **viral-webnovel** | 2026平台合规逐条过检 + 爆款潜力评估 + 短剧通用红线（九）。输出包含八部分：1-6合规检查 + 7流量适配建议 + 8爆款潜力评估。见 `references/platform-compliance-2026.md`（**新增第九节：短剧通用红线9条+骨架质量红线12条**）、`references/compliance-audit-template.md` 和 **`references/compliance-发配边关案例库.md`**（已过审爆款的合规处理实例参考，审计时必须加载对比，逐集执行台词违禁词清单扫描）。\n\n  **⚡ 合规是 pipeline gate（前置条件，不过审不进入下一步）。** 具体流程：\n  1. ✅ **scriptwriter/prompter 自检** — 每写完一集，对照 `compliance-发配边关案例库.md` 第九节台词违禁词清单自行检查\n  2. ✅ **auditor 独立审计** — 全部产出后，加载 `compliance-发配边关案例库.md` 逐集执行完整审计（含台词扫描、隐性红线、S级绑定评估）\n  3. ✅ **lead 抽查** — 交付前随机抽查3-5集，确认前两层已执行\n  4. ⛔ **gate 条件** — auditor 报告评级低于 A- 或发现任何🚫绝对禁止词，不得进入下一阶段（退回 scriptwriter 修改，重新审计）\n  5. 🔄 **compliance reference 更新后必须重新审计** — 如果 `compliance-发配边关案例库.md` 或 `platform-compliance-2026.md` 在项目进行中被更新，已通过的合规审计结果自动失效，必须重新跑一遍审计。\n\n  **⚠️ 台词违禁词审计失败案例（2026-06-27）：** 初次审计仅检查了7个宏观维度的合规，未覆盖台词级违禁词（穿书、风水、臭娘们、下沉市场、甘特图等），导致16处问题遗漏，被用户纠正后才补查。教训：**台词违禁词清单必须作为独立审计维度，不能合并到「宏观合规」中一起评估。**
+
+  **审计前预检：确认集数一致性。** 读取 `04-全集大纲.md` 确认剧本总集数，检查 `episodes/` 目录下的文件是否覆盖全部集数且无旧版残余。审计报告声明集数必须与实际文件一致。
 
 ### 新建 profile 的步骤
 
@@ -309,7 +336,39 @@ See `references/omo-agent-template.md` for a complete agent `.md` example.
 
 Push the work through controllable stages:
 
+0. **合规优先（最高优先级）** — 每次进入 pipeline 新步骤前，先加载 `references/compliance-发配边关案例库.md`。所有情节决策前自问：「这个情节过审了吗？」。不过审的剧情，写得再好也是白写。用户明确要求「必须必须过审，不过审做什么都白搭」。
+
 1. **Kanban first** — 进入创作流程时，立即 `hermes kanban init` 创建看板，将任务分解为 Kanban 卡片分配给各 profile 认领。不要从头到尾在一个对话中完成所有产出。6-profile 架构见 `references/hermes-kanban-architecture.md`。
+2. **⚡ Pre-dispatch pre-flight（新增调度检查点）** — 每次 `hermes kanban create --assignee <profile>` 之前，必须口头或书面确认以下两项：
+   - ✅ **该 profile 的模型是什么？**（自2026-06-27起全部为 deepseek-v4-flash@opencode-go，因成本原因从 Gemini 降级。详见「多 Profile 模型分配策略」）
+   - ✅ **该 profile 被禁用了哪些工具？**（scriptwriter/auditor/reviewer 禁用了 clarify、web、browser 等，见 `references/hermes-kanban-architecture.md` → Toolset 配置表）
+   - 如果发现分配模型错误，**必须先修正再创建任务**，不能跳过。
+3. **⚡ 调度优先级：Kanban 优先，delegate_task 仅作降级** — 创建生产任务（△剧本、分镜提示词）时，必须优先使用 `hermes kanban create` 分配给对应 profile。仅当 Kanban worker 连续2次崩溃（\"pid not alive\"）后，才归档阻塞任务、改用 `delegate_task` 作为降级方案。用户在2026-06-27会话中多次纠正「用看板啊，又自己干活吗」——不得主动跳过看板使用 delegate_task。
+
+### 🔪 Pitfalls（Kanban 任务拆分相关）
+
+- ❌ 不要一次创建超过5集的大任务。 实践表明，50集或10集的△剧本任务会导致 scriptwriter 进程超时崩溃（"pid not alive"），且scratch workspace输出会丢失。必须严格执行5集一批，每批 --max-runtime 900。
+- ✅ 每批产出后先让用户确认质量，再创建下一批。 每5集剧本完成后，用户需要抽查格式/台词量/合规，确认后再创建下5集的任务。不要一口气把所有批次压入队列。
+- ✅ 分镜提示词也按5集一批走 Kanban。 batch size 统一为5集，不因体量大就拆成 delegate_task。
+  - `delegate_task` 直接在当前 profile 模型下运行子代理，无进程崩溃风险
+  - 子代理可以直接 `write_file` 到项目目录，不会写入临时 scratch workspace 后丢失
+  - 支持3个并行子代理同时写作不同批次
+  - 用 `context=` 参数传递合规参考文件路径和注意事项
+- ✅ **每批任务在前一批完成后再创建**，不要一次性全部压入队列。
+- ✅ **每批任务的 `context` 中必须引用前一批的产出文件路径**，让新批次的 agent 能读取上下文保持风格一致。
+- ✅ **Kanban 适用场景：** planner 的规划类任务（bible/大纲/选题）——这些任务体量小、输出少、失败影响低。
+- ✅ **delegate_task 适用场景：** scriptwriter 的△剧本写作、prompter 的分镜提示词生成——这些任务体量大、输出文件多、需要写入项目目录。
+
+### ⚡ Kanban → delegate_task 降级流程
+
+当 Kanban task 连续2次崩溃（"pid not alive"）时，不要无限重试：
+
+1. 用 `hermes kanban archive <id>` 归档阻塞任务
+2. 改用 `delegate_task` 将同一批剧本写作任务派发给子代理
+3. 子代理的 `context` 中携带：项目路径、参考文件列表、合规要求
+4. 子代理直接 `write_file` 写入 `短剧版/episodes/` 目录
+5. `delegate_task` 的 `toolsets` 设为 `["terminal","file"]`（不需要web/browser）
+
 2. Find or invent stronger premises.
 3. Ask the user to choose one premise before expanding it.
 4. Build the story bible and opening structure.
@@ -340,15 +399,36 @@ For teams or power users, the single-agent pipeline can be upgraded to a paralle
 
 | profile | 角色 | reference 数 |
 | `viral-webnovel` | 主控（对话入口=实际lead） | 有 |
-| `webnovel-planner` | 规划师 | 4 |
-| `webnovel-scriptwriter` | 短剧编剧（直出△剧本） | 2 |
-| `webnovel-auditor` | 合规审计 | 2 |
-| `webnovel-prompter` | 分镜提示词 | 3 |
-| `webnovel-reviewer` | 全局复盘 | 1 |
+| `webnovel-planner` | 规划师 | 5 |
+| `webnovel-scriptwriter` | 短剧编剧（直出△剧本） | 3 |
+| `webnovel-auditor` | 合规审计 | 3 |
+| `webnovel-prompter` | 分镜提示词 | 4 |
+| `webnovel-reviewer` | 全局复盘 | 2 |
 
-### 多 Profile 模型分配策略
+### 多 Profile 模型分配策略（2026-06-27 更新：因成本原因全面切换至 deepseek-v4-flash）
 
-不同任务对模型的要求不同。完整能力矩阵见 `references/model-capability-matrix.md`。简表：创意层（剧本/大纲/分镜）用 Gemini 3.1 Pro，品质层（小说正文）用 deepseek-v4-pro 或 GPT-5.5，分析层（趋势/选题）用 deepseek-v4-pro，执行层（合规/诊断）用 deepseek-v4-flash。自定义 provider 配置流程见 `references/custom-provider-setup.md`。
+> **成本是当前第一因素。** 2026-06-27用户明确指示：Gemini 3.1 Pro「太贵了，用不起了」。所有 profile 已从 Gemini 3.1 Pro / deepseek-v4-pro 统一降级为 **deepseek-v4-flash@opencode-go（免费）**。
+
+| profile | 当前模型 | 原模型（已弃用） | 原由 |
+|:--------|:-------|:--------------|:-----|
+| viral-webnovel (lead) | deepseek-v4-flash@opencode-go | — | 当前会话模型 |
+| webnovel-planner | deepseek-v4-flash@opencode-go | Gemini 3.1 Pro | 太贵 |
+| webnovel-scriptwriter | deepseek-v4-flash@opencode-go | Gemini 3.1 Pro | 太贵 |
+| webnovel-prompter | deepseek-v4-flash@opencode-go | Gemini 3.1 Pro | 太贵 |
+| webnovel-auditor | deepseek-v4-flash | — | 无需变更 |
+| webnovel-reviewer | deepseek-v4-flash | — | 无需变更 |
+
+**模型切换命令：**
+```bash
+hermes config set model.default deepseek-v4-flash --profile <profile名>
+hermes config set model.provider opencode-go --profile <profile名>
+hermes config set model.base_url https://opencode.ai/zen/go/v1 --profile <profile名>
+```
+
+**降级后的注意事项：**
+- deepseek-v4-flash 的创意写作能力弱于 Gemini 3.1 Pro，因此**大纲/圣经的细节颗粒度必须更粗**，给 scriptwriter 更清晰的指引
+- 对白自然度下降，需要用△剧本格式模板强制约束输出结构
+- Kanban worker 在 deepseek-v4-flash 下运行更稳定，但仍建议 △剧本写作走 `delegate_task`
 
 ### 直出短剧原则（2026-06-26 用户确认的流程变更）
 
@@ -363,6 +443,7 @@ For teams or power users, the single-agent pipeline can be upgraded to a paralle
 |:-----|:-----|:-----------|
 | [火宝短剧](https://github.com/chatfire-AI/huobao-drama) | chatfire-AI | 剧本格式（场景头）、改写原则（对话驱动/每场30-60秒）、5 Agent 分工 |
 | [Seedance2-Storyboard](https://github.com/liangdabiao/Seedance2-Storyboard-Generator) | liangdabiao | 不经过小说直接出剧本、四幕结构（起承转合）、素材编号系统 C/S/P |
+| [Toonflow](https://github.com/HBAI-Ltd/Toonflow-app) | HBAI-Ltd | 三层 Agent 体系（决策/执行/监督）、小说事件提取（cleanNovel.ts）、故事骨架+改编策略+剧本三阶段流水线、股价级反转登记表、三大密度/3-15-45节奏/黄金单集公式、分镜表（storyboard-table）、@图N 参考图绑定提示词格式、12题材×11画风 skill 文件化
 
 详见 `E:\viral-webnovel-workflow\蒸馏记录.md` 和 GitHub v2.1 tag。
 
@@ -509,7 +590,9 @@ Each agent gets injected with the relevant `references/*.md` file(s) as context 
  **竞品逆向拆解（当用户提供热门短剧文案要求分析时）：**
  - 见 `references/drama-deconstruction-methodology.md`。从用户提供的音频转文字/完整文案出发，通过五步拆解（内容结构化→单段功能标注→节奏公式提取→爽点机制归类→对标方案生成）系统化提取成功公式，产出对标方案。
  - 拆解产物：情绪曲线图、每集节奏模板、15大爆款因子、对标映射表、"不憋屈"原则检测
- - **⚠️ 对标不创新铁律**：拆解的目的是**1:1精确映射**，不是创意发挥。当用户提供已验证的爆款作品作为对标参考时，只修改故事设定（时代/背景/金手指类型），**绝不修改情绪曲线、节奏公式、爽点排列、角色关系结构**。用户多次纠正"人家爆款是有道理的"、"一定要一致"——如果原版是上行波动情绪线，对标版也必须是上行波动，不能改成深V反转。如果用户说"能不能也结合一下X"，在融合时必须保持原版的核心公式不变，只在外围添加X的元素。详见 `references/drama-deconstruction-methodology.md` 第15节「对标不创新铁律」。
+ - **⚠️ 对标不创新铁律**：拆解的目的是**1:1精确映射**，不是创意发挥。当用户提供已验证的爆款作品作为对标参考时，只修改故事设定（时代/背景/金手指类型），**绝不修改情绪曲线、节奏公式、爽点排列、角色关系结构**。用户多次纠正「人家爆款是有道理的」、「一定要一致」——如果原版是上行波动情绪线，对标版也必须是上行波动，不能改成深V反转。如果用户说「能不能也结合一下X」，在融合时必须保持原版的核心公式不变，只在外围添加X的元素。详见 `references/drama-deconstruction-methodology.md` 第15节「对标不创新铁律」。
+
+ - **✅ 推荐：进入 bible 前，先输出 S1 逐段映射表让用户验证节奏。** 实践表明，对标新项目时用户最有感知的交付物不是「20个爆款因子列表」，而是**把对标原版的 S1 每段情节逐段映射到对标版，标注每段的情绪功能**（绝望→期待→主动→憋屈→暖→打脸）。这种映射表让用户在进入 bible 前就能确认「节奏完全一致」，避免大量无用功。建议格式：左右对照表，左侧对标原版情节+情绪标签，右侧对标版情节+情绪标签。
 
  **Bing浏览器搜索实测有效流程（当search backend和curl都不可用时）：**
   1. 导航到 `https://cn.bing.com`（必应国内版，不需要API Key，比Google/DuckDuckGo稳定）
@@ -534,11 +617,11 @@ Each agent gets injected with the relevant `references/*.md` file(s) as context 
   3. ✅ 用户选定方向后，**只按该方向生成**，不再跨多个方向分散选题
   4. ✅ 新一批选题的质量判断：如果用户对其中1个表现出兴趣（"8"、"第三个"、"那个XX"），就是信号——按这个方向深入
   5. ❌ 不要在被拒后追问"要不您说一下想要什么"——用户如果知道想要什么就不会说"都不要"了。提供具体的选择题（A/B/C选项）比开放性问题更有效
-|- `bible`: Load `references/story-bible-template.md`, plus `references/idea-scoring.md` if the selected premise still feels generic. Load `references/manga-hit-guide-2026.md` if the premise needs golden-finger legal-packaging advice. **Scope-proportional conciseness**: keep bible content proportional to total novel length. For a short novel (5万字), the bible should be 5-10 narrative points (core promise, protagonist, cheat, ~4 arcs), not a full deep-dive. If the user says "太长了" about bible output, immediately compress to cover only essential skeleton—abbreviate long-secret tables, antagonist pools, and volume maps to 2-3 lines each. **When the user sets a total word count cap like 5万字, that's a scope signal: everything (bible, outline, chapters) should fit within that constraint, not fight it.**
-|- `outline-30`: Load `references/outline-structure.md` and `references/manga-hit-guide-2026.md`. Create the front-30-chapter structure with legally packaged payoff sequencing. Stop for Manual Checkpoint B before drafting.
+|- `bible`: Load `references/story-bible-template.md`, `references/story-skeleton-methodology.md`, plus `references/idea-scoring.md` if the selected premise still feels generic. Load `references/manga-hit-guide-2026.md` if the premise needs golden-finger legal-packaging advice. **新增**：用 `story-skeleton-methodology.md` 检验故事核/三大密度/股价级反转/矛盾四级/人物小传。**Scope-proportional conciseness**: keep bible content proportional to total novel length. For a short novel (5万字), the bible should be 5-10 narrative points (core promise, protagonist, cheat, ~4 arcs), not a full deep-dive. If the user says "太长了" about bible output, immediately compress to cover only essential skeleton—abbreviate long-secret tables, antagonist pools, and volume maps to 2-3 lines each. **When the user sets a total word count cap like 5万字, that's a scope signal: everything (bible, outline, chapters) should fit within that constraint, not fight it.**
+|- `outline-30`: Load `references/outline-structure.md`, `references/story-skeleton-methodology.md`, and `references/manga-hit-guide-2026.md`. Create the front-30-chapter structure with legally packaged payoff sequencing. **新增**：用 `story-skeleton-methodology.md` 设计分集决策表（行数=总集数）、付费卡点布局、股价级反转登记。Stop for Manual Checkpoint B before drafting.
 |- `full-novel-lifecycle`: See `references/full-novel-lifecycle.md` — observed 80-chapter pipeline pattern (five-volume structure, emotional curve design, auto-pilot performance).
 |- `trial-10`: Load `references/outline-structure.md` and create a detailed first-10-chapter trial-read plan.
-|- `draft-5`: Load `references/chapter-template.md`, `references/memory-system.md`, `references/platform-compliance-2026.md`, and the latest context package. Write 5 chapters, not more, unless the user explicitly asks for fewer. Chapter word count depends on active mode: Full mode ≥1000 characters, 漫剧适配版 600-800 characters, Lightweight ~2000 cumulative. Before outputting, check each chapter against the 6 zero-tolerance red lines in the compliance guide.
+|- `draft-5`: Load `references/chapter-template.md`, `references/script-writing-methodology.md`, `references/memory-system.md`, `references/platform-compliance-2026.md`, `references/story-skeleton-methodology.md#八-黄金单集公式`, and the latest context package. Write 5 chapters, not more, unless the user explicitly asks for fewer. Chapter word count depends on active mode: Full mode ≥1000 characters, 漫剧适配版 600-800 characters, Lightweight ~2000 cumulative. **新增**：用 `script-writing-methodology.md` 的 3-15-45 节奏/三大密度/情绪四通道/情绪模板自检每章。Before outputting, check each chapter against the 6 zero-tolerance red lines in the compliance guide.
 |- `compress`: Load `references/memory-system.md` and create the next-round context package.
 |- `diagnose`（双模式）: Load `references/diagnose-loop.md` and produce diagnostic analysis.
    - **增量模式**（默认）：每5章一轮写作后调用，产出读者反馈模拟、弃读风险、三条分支选择。Stop at Manual Checkpoint C。
@@ -556,6 +639,7 @@ Each agent gets injected with the relevant `references/*.md` file(s) as context 
   3. **△剧本的合规度天然更高。** 由于△剧本是视觉/动作驱动的场景化写作，很少出现超能力式抽象表述，通常比对应的正文章节更安全。
   4. **隐性红线修复策略：** 遇"爽点碾压"类问题时，优先改措辞不改剧情——将"突然获得超能力"改写为"通过长期练习/传承学习获得的技艺突破"，剧情框架不动。
   5. **审计完成后更新 `99-合规自检报告.md`** 中的状态和整改记录，确保下一次审计能直接看到本次改动。
+  6. **审计必须包含时长验证** — 对照 `references/drama-timing-standard.md`，确认每集对话字数是否符合目标时长。如果对话字数仅150字却标注2分钟，属于「时长虚标」，必须退回 scriptwriter 修改。
 | `drama-adapt`: ✅ **本profile完整保留**。参考文件 `references/drama-adaptation.md`，在本profile内直接执行即可输出△格式剧本。
 
   **⚠️ 压抑-释放压缩后的文件清理铁律：**
@@ -576,7 +660,7 @@ Each agent gets injected with the relevant `references/*.md` file(s) as context 
   4. 严格保持格式一致：新写剧本的 △ 标记、对话格式、OS 风格必须与已有剧本逐字对齐\n\n  **⚠️ 短剧开头3秒质量要求（drama-adapt 产出的核心质量门）：**\n  △剧本的第一帧画面必须是能让观众停下来的视觉冲击，绝不能让观众前3秒就划走。具体规则：\n  - ❌ **不能以"人物走进房间""坐下开始说话""日常动作"开头**——节奏太慢，短视频环境不适用\n  - ✅ 第一帧必须是：匪夷所思的动作 / 冲突爆发的瞬间 / 让人产生"这怎么可能？"好奇心的画面\n  - ✅ 系列剧第一集（ep001）的第一帧必须直接展示核心设定（如"狗用爪子打开了冰箱"），不做任何铺垫\n  - ✅ 每集前15秒必须包含至少一个"小爆点"（可以是笑点/反转/奇观/情感冲击），不能只有场景交代\n  - 示例（好）：\n    ```markdown\n    △（特写·黑暗中一声冰箱门轴摩擦声）\n    △（月光下，一只狗的爪子搭在冰箱把手上）\n    △（切到周悦在地铁上，瞳孔放大，盯着手机）\n    ```\n  - 示例（差）：\n    ```markdown\n    △（中景·玄关。傍晚。周悦开门进屋。屋里很安静，冰箱门大敞着。）\n    ```
 | `prompt-gen`: ✅ **本profile完整保留**。默认输出格式：麻薯动漫导演格式（\|切片段N + 运镜六要素 + 配音指令），见 `references/matsuri-director-prompt.md`。`references/mantoufan-prompt-source.md` 作为源skill历史参考保留。
 
-  **prompt-gen 执行流程：**\n  1. 读取目标 △ 剧本文件（epXXX.md），提取时长（X分X秒）→ 换算段数：总秒数÷15=段数，上取整\n\n  **⚠️ 规模节点：50集×每集10段≈500个文件。** 当 prompt-gen 的目标集数≥10集时，必须先告知用户产出的文件总量，并提供三种交付方案供选：\n     - 方案A「全量交付」：逐集生成全部素材清单和分段提示词（50集≈500个文件，需多轮完成）\n     - 方案B「模板先行」：仅生成前5集作为完整模板，后续45集由用户自行扩写或要求继续\n     - 方案C「仅素材清单」：为所有50集生成素材清单资产表，省略分段提示词正文\n     默认选方案B（模板先行），除非用户明确要求全量或仅清单。\n\n  **当用户选方案A（全量交付）时，用 `delegate_task` 并行加速：** 将50集按5-10集每批分包给子代理。**关键铁律：必须为每个子代理分配独占的编号区间**（P##、C##、S##），防止编号冲突。方法：在每个子代理的 `context` 中写明"你负责的ep011-ep020使用道具编号区间P13-P30，角色/场景编号复用已有"。避免出现多个代理都从P13起编导致的全局重复。
+  **prompt-gen 执行流程：**\n  1. 读取目标 △ 剧本文件（epXXX.md），提取时长（X分X秒）→ 换算段数：总秒数÷15=段数，上取整\n\n  **⚠️ 规模节点：50集×每集10段≈500个文件。** 当 prompt-gen 的目标集数≥10集时，必须先告知用户产出的文件总量，并提供三种交付方案供选：\n     - 方案A「全量交付」：逐集生成全部素材清单和分段提示词（50集≈500个文件，需多轮完成）\n     - 方案B「模板先行」：仅生成前5集作为完整模板，后续45集由用户自行扩写或要求继续\n     - 方案C「仅素材清单」：为所有50集生成素材清单资产表，省略分段提示词正文\n     默认选方案B（模板先行），除非用户明确要求全量或仅清单。\n\n  **模板先行执行流程：**\n     1. 生成 ep001 的素材清单 + 段001 提示词（让用户确认格式）\n     2. 用户确认后，生成 ep001 剩余段 + ep002-ep005 全部\n     3. 用户再确认后，用 `delegate_task` 分包生成剩余45集，每包5-10集\n     4. 每个 `delegate_task` 的 `context` 中携带：项目路径 + 画风 + 违禁词清单 + 模板文件路径（供子代理对照格式）\n     5. 分包注意：每个包分配独占的道具编号区间（P##），避免不同子代理重复编号\n\n  **当用户选方案A（全量交付）时，用 `delegate_task` 并行加速：** 将50集按5-10集每批分包给子代理。**关键铁律：必须为每个子代理分配独占的编号区间**（P##、C##、S##），防止编号冲突。方法：在每个子代理的 `context` 中写明"你负责的ep011-ep020使用道具编号区间P13-P30，角色/场景编号复用已有"。避免出现多个代理都从P13起编导致的全局重复。
   2. 读取项目 `02-角色资产表.md` 和 `03-场景资产表.md`，提取本集用到的角色 C## 和场景 S##
   3. 按每15秒一个独立分段，将剧本切分为 N 段，每段一个独立 `.md` 文件
   4. 输出两层交付物：
@@ -633,29 +717,9 @@ Each agent gets injected with the relevant `references/*.md` file(s) as context 
 
   **资产命名分隔符规则**：素材清单中所有角色造型/场景地点/年代/道具/装备名称的层级分隔符用连字符 `-`，不用中间点 `·`。AI 对 `·` 的分隔语义理解不稳定。模板及对照表见 `references/matsuri-director-prompt.md` → `## 素材清单 — 资产命名规范`。
 |- `humanize`: Load `references/rewrite-humanization.md`.
-  **Pipeline sequencing（本profile独立运行）:**
-  - ✅ 本profile内 **写小说 → 转剧本 → 分镜提示词** 全链路直接可用
-  - ✅ 三步流水线：`compliance-audit` → `drama-adapt` → `prompt-gen`
+  **Pipeline sequencing（本profile独立运行）:**\n  - ✅ 本profile内 **写小说 → 转剧本 → 分镜表 → 分镜提示词** 全链路直接可用\n  - ✅ 完整流水线：`event-extract`（小说→结构化事件表）→ `outline-30`（分集骨架+股价级反转）→ `drama-adapt`（△剧本）→ `storyboard-table`（分镜表）→ `prompt-gen`（麻薯提示词）→ `compliance-audit`\n  - ✅ 简略三步流水线（跳过分镜表）：`compliance-audit` → `drama-adapt` → `prompt-gen`
 
-  **Output folder structure for drama-adapt (+ prompt-gen):**
-  ```
-  <project-folder>/短剧版/
-  ├── 01-题材定位.md          # S/A/B/C分级 + 受众 + 付费策略
-  ├── 02-角色资产表.md        # 角色编号C01-C99 + 外貌/性格标签 (prompt-gen读取)
-  ├── 03-场景资产表.md        # 场景编号S01-S99 + 风格关键词 (prompt-gen读取)
-  ├── 04-全集大纲.md          # 60-100集 × 三幕结构表
-  ├── 99-合规自检报告.md      # 红线 + 灰区扫描（可选）
-  ├── episodes/               # △格式文字剧本（drama-adapt产出）
-  │   ├── ep001.md
-  │   ├── ep002.md
-  │   └── ...
-  └── 98-视频分镜提示词/       # 分镜提示词（prompt-gen产出，每15秒一个独立段文件）
-      ├── ep001-素材清单.md
-      ├── ep001-段001-提示词.md
-      ├── ep001-段002-提示词.md
-      ├── ...
-      └── ep002-素材清单.md
-  ```
+  **Output folder structure for drama-adapt (+ storyboard-table + prompt-gen):**\n  ```\n  <project-folder>/短剧版/\n  ├── 01-题材定位.md          # S/A/B/C分级 + 受众 + 付费策略\n  ├── 02-角色资产表.md        # 角色编号C01-C99 + 外貌/性格标签 (prompt-gen读取)\n  ├── 03-场景资产表.md        # 场景编号S01-S99 + 风格关键词 (prompt-gen读取)\n  ├── 04-全集大纲.md          # 60-100集 × 三幕结构表\n  ├── 99-合规自检报告.md      # 红线 + 灰区扫描（可选）\n  ├── episodes/               # △格式文字剧本（drama-adapt产出）\n  │   ├── ep001.md\n  │   ├── ep002.md\n  │   └── ...\n  ├── 分镜表/                 # 结构化分镜表（storyboard-table产出）\n  │   ├── ep001-分镜表.md\n  │   ├── ep002-分镜表.md\n  │   └── ...\n  └── 98-视频分镜提示词/       # 分镜提示词（prompt-gen产出，每15秒一个独立段文件）\n      ├── ep001-素材清单.md\n      ├── ep001-段001-提示词.md\n      ├── ep001-段002-提示词.md\n      ├── ...\n      └── ep002-素材清单.md\n  ```
 
   **单集△格式模板：**
   ```markdown
@@ -739,6 +803,10 @@ Each agent gets injected with the relevant `references/*.md` file(s) as context 
 | 写合规审计报告 | `references/compliance-audit-template.md` |
 | 写素材清单 | `references/asset-description-format.md` |
 | 写运镜补充 | `references/camera-shot-selection.md` |
+| 写分镜表 | `references/storyboard-table-methodology.md` |
+| 写导演规划 | `references/director-plan-methodology.md` |
+| 分镜提示词 @图N 规范 | `references/matsuri-director-prompt.md` → `## @图N 参考图绑定格式` |
+| 剧本质量自检 | `references/story-skeleton-methodology.md`（骨架）+ `references/script-writing-methodology.md`（单集）+ `references/storyboard-table-methodology.md`（分镜）+ `references/director-plan-methodology.md`（导演规划） |
 
 ### 三类错误清单（每次执行前通读）
 
@@ -789,9 +857,99 @@ When the user asks to convert a premise to 女频 (female-lead):
 - **Power system gendering**: avoid male-gaze framing. Female lead's victories should be through intelligence, resilience, or unique talent — not just "fighting like a man."
 - **Compliance**: 女频 stories are subject to the same 2026 hidden red lines (no 身份反转爽点, no 情感操控), but 纯爱甜宠 + 事业成长 is A-level safe.
 
-### 漫剧适配版 Writing Rules
+### 穿越文核心引擎：认知差碾压（2026-06-27 用户验证的底层逻辑）
 
-When operating in 漫剧适配版 mode, apply these additional constraints:
+> 古代穿越文的底层爽感来源不是金手指超能力，而是 **「现代/高级认知降维颠覆古代/低级认知」**——观众追的不是「主角多强」，而是「我知道你不知道，我做到你做不到」的碾压感。
+
+**金手指设计铁律：** 评估每个金手指能力时，问自己三个问题：
+1. 这个能力在古代人眼中是什么样？（匪夷所思？邪术？胡闹？）
+2. 什么时候会颠覆古代人的认知？（什么场景、什么对话？）
+3. 颠覆后观众为什么会爽？（因为观众和主角共享同一个认知层级）
+
+| 穿越类型 | 认知差来源 | 碾压对象 | 经典打脸场景 |
+|---------|-----------|---------|------------|
+| 末世→古代边关 | 末世生存知识/植物辨识/异能 | 古代人对农业/药材的有限认知 | 「挖不到野菜→我挖到了」 |
+| 现代管理学→江湖 | KPI/供应链/品牌营销 | 纯靠拳头说话的江湖规则 | 「没武功也赢了镖局大佬」 |
+| 现代科学→古代 | 化学/物理/工程学 | 古代人的蒙昧/信息差 | 「烧石头能做出水泥？」 |
+| 现代农学→修仙 | 嫁接/杂交/堆肥/轮作 | 原始灵植利用方式 | 「杂草→千年灵药的养分」 |
+| 现代医学→古代 | 外科/药学/防疫 | 巫医/偏方 | 「痢疾一剂药就好」 |
+
+**对标映射时新增一列「认知差场景」：** 在1:1映射模板（见 `references/drama-deconstruction-methodology.md` 第15节）中，每个爆款因子映射到对标版时，同步设计1-2个认知差颠覆场景。没有认知差的映射是「换皮不换骨」，用户无法感知爽感。
+
+### 男女频双吃设计（2026-06-27 用户确认模式）
+
+当用户要求「男女频双吃」时，适用以下叙事结构：
+
+**开篇顺序：先女主→再男主（不可颠倒）**
+
+| 章位 | 内容 | 女频钩子 | 男频钩子 |
+|:----|:----|:--------|:--------|
+| 第1章 | 女主苦难开局（被买冲喜/睁眼绝境） | ✅ 虐点+共情 | — |
+| 第2章 | 女主主动决策（「镖局我管」），与男主相遇 | ✅ CP张力 | — |
+| 第3章 | 从旁人/环境暗示男主过去（「他曾经是…」） | ✅ 对男主好奇 | ✅ 「这个男人会恢复」 |
+| 第4-5章 | 女主能力展示+首轮打脸 | ✅ 经商逆袭爽 | ✅ 看了下去 |
+
+**双线并行规则：**
+- **女主主线**（每章驱动）：经商/种田/打脸/积累 → 女频核心读者持续满足
+- **男主暗线**（每3-5章一次）：练功恢复/暗中护她/过去线索 → 男频读者追更动力
+- **两条线的关系**：不是分离的，是「她在前面经营→他在后面默默支持/恢复实力以备不时之需」
+- **CP线**：搭伙过日子式的自然升温，不是一见钟情。男主的温柔通过行动表达（修屋顶/做家具/暗中跟随），女主的关注通过她逐渐「看见」他来体现
+
+**常见错误：**
+- ❌ 开篇先写男主被废（女频读者第一页就划走）
+- ❌ 男女主线五五开抢戏（始终以女主为主线视角，男主线作为调剂）
+- ❌ 两条线在同一章内频繁切换（建议整章视角统一，定期切换章节视角）
+- ❌ 男主暗线过早爆发（S1后期/S2才让男主真正展示恢复成果，保持男频追更欲）
+
+### 第1章出货铁律（2026-06-27 用户明确要求）
+
+> 发配边关的原版前5集全是压抑铺垫，但用户要求更狠——**第1章就要让读者觉得值了**。
+
+第1章必须包含一个完整的 mini arc，不能只有压抑和铺垫：
+
+```
+[10%] 压抑引入 —— 穿书/睁眼/被告知绝境
+[20%] 亮金手指 —— 脑子里现代记忆/能力全在
+[40%] 困难展示 —— 债主堵门/被嫌弃/人手不足
+[20%] 第一次出货 —— 翻账本抓住问题 / 提出方案镇住场
+[10%] 钩子 —— 她走向男主/做出第一个决策
+```
+
+**检查清单（写第1章前逐项过）：**
+- [ ] 第1章出现了金手指能力展示吗？
+- [ ] 第1章有具体成果/收获/打脸吗？（不是只有「承诺」）
+- [ ] 第1章结尾有让人想点第2章的钩子吗？
+- [ ] 如果第1章去掉所有「铺垫」情节，还剩几个能打的爽点？
+
+如果以上任何一项为否 → 重写第1章，把出货点提前。
+
+### 🕐 时长计算标准（2026-06-27 用户纠正的铁律）
+
+> ⚠️ 本技能在2026-06-27前的所有脚本和分镜都存在「时长估算错误」——用总字数÷300计算时长，实际时长应由**台词/对话字数**决定。已经被用户多次纠正。**每次写剧本前必须读这一段。**
+
+**核心原则：时长由对话量决定，动作描述不占时长。**
+
+计算公式：
+```
+每集时长（秒）= 对话总字数 ÷ 3（字/秒）+ 停顿/反应时间（约15%）
+```
+
+| 目标时长 | 需要对话字数 | 每15秒段台词量 | 每集台词句数 |
+|:-------|:----------|:-------------|:----------|
+| 2分00秒 | **300-400字** | 每段2-4句对话 | 20-30句 |
+| 2分15秒 | 350-450字 | 每段2-4句 | 22-32句 |
+| 2分30秒 | 400-500字 | 每段3-5句 | 25-35句 |
+
+**写作规范：**
+- ✅ △动作描述 ≤15字/段，不单独占时间线
+- ✅ 对话占每集60%以上篇幅
+- ✅ 动作和表情与对话同时发生，不算额外时长
+- ❌ 「她抬起头，疑惑地看着对方，眉头微皱，然后发问」→ 压缩为「她抬头，疑惑」——因为「你是谁」说出来的时候这些动作都同时在发生
+- ❌ 不需要把每个微表情写成独立描述，AI视频模型会自动生成合理的面部动作
+
+完整时长计算标准见 `references/drama-timing-standard.md`。
+
+## 漫剧适配版 Writing Rules
 
 - **Each chapter = one scene.** No scene breaks within a chapter. One location, one continuous timeframe.
 - **Open with a visual action**, not exposition. First sentence must be something a camera can see.
@@ -930,6 +1088,15 @@ When saving generated content to disk:
 **Save only after explicit user instruction** for planning deliverables. For production deliverables (chapters, drama scripts, prompt-gen), auto-save to the established project directory.
 
 **Exception: Auto-Pilot mode.** When operating in auto-pilot mode (用户说"自动执行"、"你帮我选"等), files ARE auto-saved after each draft-5 round without asking. The agent still uses `write_file` directly (one file per call), but doesn't pause to ask "should I save this?". However: in auto-pilot mode, output content is still displayed in the conversation as it's written—file saving is automatic, but in-conversation display is not skipped.
+
+### Pitfalls（合规 · 穿越/穿书标签）
+
+- ❌ **不要在剧本和分镜提示词中出现「穿越」「穿书」「穿」等标签化表述。** "穿越"在2026平台审核中属于高风险题材，标签化表述容易被机审标记。
+  - 角色OS禁写：「我穿书了」「我是个现代社畜」「我穿越了」
+  - 场景描述禁写：「苏念（现代社畜穿书）睁开眼」
+  - 内心独白禁写：「穿书前」「前世」
+  - ✅ 替代方案：用「一觉醒来就成了」「做了五年财务的人是新娘子」「第一天就碰上这么多事」等自然表述
+  - ✅ 现代认知通过行为展示（翻账本/懂药材/会算账），不贴标签
 
 ### Pitfalls（file output）
 

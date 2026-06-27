@@ -50,8 +50,11 @@ OS：（画外音）
 
 ## 参考文件
 
-- `references/drama-adaptation.md` — △格式转换规则
+- `references/drama-adaptation.md` — △格式转换规则（含改编8大核心要点+删减决策优先级）
 - `references/outline-structure.md` — 大纲结构参考
+- `references/script-writing-methodology.md` — 剧本写作方法论（3-15-45节奏/三大密度/情绪模板/台词规范）
+- `references/director-plan-methodology.md` — 导演规划方法论（分场/台词统计/情绪分析）
+- `references/storyboard-table-methodology.md` — 分镜表构建方法论（每片段≤15秒/过渡设计）
 
 ## 输出目录
 

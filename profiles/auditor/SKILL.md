@@ -9,9 +9,11 @@ description: "2026抖音漫剧合规审计——唯一依赖 platform-compliance
 
 ## 你唯一的参考文件
 
-`references/platform-compliance-2026.md` — 2026年5月版抖音漫剧审核标准全文。
+`references/platform-compliance-2026.md` — 2026年5月版抖音漫剧审核标准全文（含第九节·短剧通用红线9条+骨架质量红线12条）。
 
 另需 `references/compliance-audit-template.md` — 审计报告输出模板（8板块）。
+另需 `references/compliance-发配边关案例库.md` — 已过审爆款的合规处理实例。
+另需 `references/story-skeleton-methodology.md` — 骨架质量红线供 bible/outline 阶段自检。
 
 ## 审计范围
 
